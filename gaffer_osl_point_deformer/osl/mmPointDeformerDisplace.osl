@@ -1,0 +1,52 @@
+shader mmPointDeformerDisplace
+(
+    point inP = P,
+    normal inN = N,
+
+    point inBindP = point(0.0),
+    point inAnimP = point(0.0),
+
+    normal inBindN = normal(0.0),
+    normal inAnimN = normal(0.0),
+
+    int methodSwitch = 0,
+
+    output point outP = point(0.0)
+
+)
+
+{
+
+
+    if (methodSwitch == 0) {
+
+        float dist = distance(inP, inBindP);
+
+        vector dir = inP - inBindP;
+        vector nDir = normalize(dir);
+
+        //vector up = (0, 1, 0);
+
+        float angle = acos(dot(normalize(inBindN), normalize(inAnimN)));
+        vector axis = normalize(cross(normalize(inBindN), normalize(inAnimN)));
+
+        vector rotDir = rotate(nDir, angle, axis);
+        vector disp = rotDir * dist;
+
+        outP = inAnimP+disp;
+
+
+    } else {
+
+        float dist = distance(inP, inBindP);
+
+        vector nAnimN = normalize(inAnimN);
+        vector disp = nAnimN*dist;
+
+        outP = inAnimP+disp;
+        
+    }
+
+
+
+}
